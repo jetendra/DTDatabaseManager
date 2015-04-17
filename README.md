@@ -18,15 +18,56 @@ It has normal basic configuration to integrate it with AIR based app.
 
 #### Add SWC
 
->`TBD`
+Just need to copy the SWC and pest in you Flex lib package.
 
 #### Create a Local Dtatabase Manager Class
 
->`TBD`
+To configure DTDatabaseManager swc and handle its result create a new (local to app) database manager singleton class as fallows.
+
+````AS3
+package com.devtrip
+{
+	import com.devtrip.utils.db.dataBaseManager;
+	import com.devtrip.utils.db.events.DBEventDispatcher;
+	import com.devtrip.utils.db.events.DBEvents;
+	import com.devtrip.utils.db.tableFactory;
+	
+	public class KeyGenDBManager
+	{
+	  
+	  private static var _instance : KeyGenDBManager = null;
+	  
+		public function KeyGenDBManager(enforcer:SingletonEnforcer)
+		{
+			if (_instance != null) throw Error('Singelton error');
+			_instance = this;
+		}
+		
+		/**
+		 * @Public [access point for class]
+		 * @param - [NA] 
+		 * @return - [available instance of the class
+		 * */
+		public static function get instance() : KeyGenDBManager {
+			if(_instance == null){
+				_instance = new KeyGenDBManager(new SingletonEnforcer());
+			}
+			return _instance;
+		}
+		
+	}
+}
+
+class SingletonEnforcer
+{
+}
+````
 
 #### Set Database constants
 
->`TBD`
+DTDatabaseManager.swc have feature to create and handle n numbers of DataBase table from some basic external configurations.
+
+
 
 #### Add Methods
 

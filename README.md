@@ -12,9 +12,10 @@ It has normal basic configuration to integrate it with AIR based app.
 
 1. [Add SWC](#add-swc)
 2. [Create a Local Dtatabase Manager Class](create-a-local-dtatabase-manager-class)
-3. [Set Database constants](Set Database constants)
-4. [Add Methods](#add-methods)
-5. [Set Sql Commands](#set-sql-commands)
+3. [Set Database file constants](set-database-file-constants)
+4. [Set Sql Commands](#set-sql-commands)
+5. [Add Methods](#add-methods)
+
 
 #### Add SWC
 
@@ -63,17 +64,107 @@ class SingletonEnforcer
 }
 ````
 
-#### Set Database constants
+#### Set Database file constants
 
 DTDatabaseManager.swc have feature to create and handle n numbers of DataBase table from some basic external configurations.
 
+To Configure DB file, add following constants.
+
+```AS3
+
+	private static const DB_FILE : String = "keygen.db";
+
+```
+
+#### Set Sql Commands
+
+To set sql table and sql command define follwing commands as fallows -
+
+```AS3
+
+	private  static const ADMIN_TABLE_INDEX : int = 0;
+	private  static const ADMIN_TABLE_NAME : String = "keygenadmin";
+	[Embed(source="sql/admin/createTable.sql", mimeType="application/octet-stream")]
+	private static const CreateAdminTableQuerry : Class;
+	private static const CREATE_ADMIN_TABLE_SQL:String = new CreateAdminTableQuerry();
+	[Embed(source="sql/admin/populateTable.sql", mimeType="application/octet-stream")]
+	private static const PopulateAdminTableQuerry : Class;
+	private static const POPULATE_ADMIN_TABLE_SQL:String = new PopulateAdminTableQuerry();
+	[Embed(source="sql/admin/addRow.sql", mimeType="application/octet-stream")]
+	private static const AddRowAdminTableQuerry : Class;
+	private static const ADD_ROW_ADMIN_SQL:String = new AddRowAdminTableQuerry();
+	[Embed(source="sql/admin/updateRow.sql", mimeType="application/octet-stream")]
+	private static const updateRowAdminTableQuerry : Class;
+	private static const UPDATE_ROW_ADMIN_SQL:String = new updateRowAdminTableQuerry();
+
+```
+
+And sql commands in **sql/admin/** package as fallows-
+
+sql/admin/createTable.sql -
+
+```sql
+	CREATE TABLE keygenadmin
+	(
+		id int PRIMARY KEY AUTOINCREMENT,
+		adminEmail String NOT NULL,
+		adminUName String NOT NULL,
+		adminPwd String NOT NULL,
+		adminAccess String NOT NULL
+	)
+```
+
+sql/admin/populateTable.sql -
+
+```sql
+
+	INSERT INTO keygenadmin
+	(
+		adminEmail,
+		adminUName,
+		adminPwd,
+		adminAccess
+	)
+	SELECT 'abc@xyz.com', 'admin', '12345678', 'full' UNION
+	SELECT 'def@uvw.com', 'admin1', '12345678', 'full'
+
+```
+
+sql/admin/addRow.sql -
+
+```sql
+
+	INSERT INTO keygenadmin
+	(
+		adminEmail,
+		adminUName,
+		adminPwd,
+		adminAccess
+	)
+	VALUES
+	(
+		:adminEmail,
+		:adminUName,
+		:adminPwd,
+		:adminAccess
+	)
+
+```
+sql/admin/updateRow.sql -
+
+```sql
+
+	UPDATE keygenadmin
+	SET adminEmail = :adminEmail,
+		adminUName = :adminUName,
+		adminPwd = :adminPwd,
+		adminAccess = :adminAccess
+	WHERE id = :id
+
+```
 
 
 #### Add Methods
-
->`TBD`
-
-#### Set Sql Commands
 
 >`TBD`
 

@@ -14,7 +14,7 @@ It has normal basic configuration to integrate it with AIR based app.
 2. [Create a Local Dtatabase Manager Class](create-a-local-dtatabase-manager-class)
 3. [Set Database file constants](set-database-file-constants)
 4. [Set Sql Commands](#set-sql-commands)
-5. [Add Methods](#add-methods)
+5. [Initiate Database manager](#initiate-database-manager)
 
 
 #### Add SWC
@@ -164,9 +164,32 @@ sql/admin/updateRow.sql -
 ```
 
 
-#### Add Methods
+#### Initiate Database manager
 
->`TBD`
+Create a public initDB() method with local database manager class as fallows and set internal data as fallows -
+
+```AS3
+
+		public function initDB():void
+			{
+			dataBaseManager.instance.dbFile = DB_FILE;
+			
+			var admin : Object = tableFactory.createObject(
+				ADMIN_TABLE_INDEX, 
+				ADMIN_TABLE_NAME, 
+				CREATE_ADMIN_TABLE_SQL, 
+				POPULATE_ADMIN_TABLE_SQL, 
+				ADD_ROW_ADMIN_SQL, 
+				UPDATE_ROW_ADMIN_SQL
+			);
+			dataBaseManager.instance.dbTable = admin;
+			
+			DBEventDispatcher.getInstance().addEventListener(DBEvents.DB_POPULATED,handleDBEvents);
+			dataBaseManager.instance.openDatabase();
+			
+		}
+
+```
 
 ## Event Description
 

@@ -268,10 +268,10 @@ Nedd to call **updateInfo** method of **dataBaseManager** as fallows -
 
 Database manager SWC dispatch following Events, whose description is as fallows -
 
-6. [DB POPULATED](#db-populated)
-7. [DB UPDATE DONE](#db-update-done)
+9. [DB POPULATED](#db-populated)
+10. [DB UPDATE DONE](#db-update-done)
 
-#### PRODUCT STATUS
+#### DB POPULATED
 
 >`DB_POPULATED`
 

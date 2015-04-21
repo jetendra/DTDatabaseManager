@@ -15,6 +15,9 @@ It has normal basic configuration to integrate it with AIR based app.
 3. [Set Database file constants](set-database-file-constants)
 4. [Set Sql Commands](#set-sql-commands)
 5. [Initiate Database manager](#initiate-database-manager)
+6. [Handle Database Events](#handle-database-events)
+7. [Adding Row In Table](#adding-row-in-table)
+8. [Updating Row Of Table](#updating-row-of-table)
 
 
 #### Add SWC
@@ -73,6 +76,7 @@ To Configure DB file, add following constants.
 ```AS3
 
 	private static const DB_FILE : String = "keygen.db";
+	private static const DB_PWD : String = "1234567890987654"; // Optional
 
 ```
 
@@ -171,8 +175,9 @@ Create a public initDB() method with local database manager class as fallows and
 ```AS3
 
 		public function initDB():void
-			{
+		{
 			dataBaseManager.instance.dbFile = DB_FILE;
+			dataBaseManager.instance.dbPwd = DB_PWD; // Optional
 			
 			var admin : Object = tableFactory.createObject(
 				ADMIN_TABLE_INDEX, 
@@ -191,27 +196,90 @@ Create a public initDB() method with local database manager class as fallows and
 
 ```
 
+#### Handle Database Events
+
+You need to add **handleDBEvents** as fallows -
+
+```AS3
+
+	private function handleDBEvents(evt:DBEvents):void
+	{
+		switch(evt.type){
+			case DBEvents.DB_POPULATED:
+				
+				devtripVo.instance.admindbdata = evt.params.dbData[ADMIN_TABLE_INDEX];
+				devtripVo.instance.appdbdata = evt.params.dbData[APP_TABLE_INDEX];
+				devtripVo.instance.userdbdata = evt.params.dbData[USER_TABLE_INDEX];
+				logAdminData(devtripVo.instance.admindbdata);
+				logAppData(devtripVo.instance.appdbdata);
+				logUserData(devtripVo.instance.userdbdata);
+				break;
+			case DBEvents.DB_UPDATE_DONE:
+				
+				if(evt.params.dbTableIndex == ADMIN_TABLE_INDEX)
+					devtripVo.instance.admindbdata = evt.params.dbData[ADMIN_TABLE_INDEX];
+				else if(evt.params.dbTableIndex == APP_TABLE_INDEX)
+					devtripVo.instance.appdbdata = evt.params.dbData[APP_TABLE_INDEX];
+				else if(evt.params.dbTableIndex == USER_TABLE_INDEX)
+					devtripVo.instance.userdbdata = evt.params.dbData[USER_TABLE_INDEX];
+				
+				logAppData(devtripVo.instance.appdbdata);
+				break;
+			default:
+				trace("do nothing");
+		}
+	}
+
+```
+
+#### Adding Row In Table
+
+Nedd to call **insertInfo** method of **dataBaseManager** as fallows -
+
+```AS3
+	public function addAdmin(obj:Object):void
+	{
+		var adminObj : Object = new Object();
+		adminObj.adminEmail = obj.Email;
+		adminObj.adminUName = obj.UName;
+		adminObj.adminPwd = obj.Pwd;
+		adminObj.adminAccess = obj.Access;
+		
+		dataBaseManager.instance.insertInfo(adminObj,ADMIN_TABLE_INDEX);
+	}
+
+```
+
+#### Updating Row Of Table
+
+Nedd to call **updateInfo** method of **dataBaseManager** as fallows -
+
+```AS3
+	public function updateAdmin(obj:Object):void
+	{
+		//obj should have all elements of Admin table.
+		dataBaseManager.instance.updateInfo(obj,ADMIN_TABLE_INDEX);
+	}
+
+```
+
+
 ## Event Description
 
 Database manager SWC dispatch following Events, whose description is as fallows -
 
-6. [PRODUCT STATUS](#product-status)
-7. [PRODUCT EXPIRED](#product-expired)
+6. [DB POPULATED](#db-populated)
+7. [DB UPDATE DONE](#db-update-done)
 
 #### PRODUCT STATUS
 
->`PRODUCT_STATUS`
+>`DB_POPULATED`
 
-This event will be dispatched when product access validation is done on startup. This will have **_productStatus** objct with the event params, and this object includes following - 
+This event will be dispatched when Database is created and populated with default data in **populateTable.sql** . This will have **dbData** Array with the event params, and this arrary include the data(Array collection Object) of DB in sequence of **ADMIN_TABLE_INDEX** i.e. the index passed with populating the DB constants.
 
-installation_date, product_id, product_key, product_validity, product_status and product_guid.
+#### DB UPDATE DONE
 
-#### PRODUCT EXPIRED
+>`DB_UPDATE_DONE`
 
->`PRODUCT_EXPIRED`
+This event will be dispatched when database update request is done. This will have **dbData** Array with the event params, and this arrary include the data(Array collection Object) of DB in sequence of **ADMIN_TABLE_INDEX** i.e. the index passed with populating the DB constants.
 
-This event will be dispatched on startup, when product free use time is elapsed.
-
-#### Note -
-
->` A detailed description for class and methods is also available with doc package . The live view URL is https://cdn.rawgit.com/DevtripAccessManager/DTAM/master/doc/index.html`

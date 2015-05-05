@@ -175,7 +175,7 @@ sql/admin/deleteRow.sql -
 
 ```sql
 
-	DELETE FROM dtdmkeygenuser
+	DELETE FROM keygenadmin
 	WHERE id = :id
 
 ```

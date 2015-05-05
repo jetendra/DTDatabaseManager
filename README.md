@@ -283,7 +283,7 @@ Nedd to call **updateInfo** method of **dataBaseManager** as fallows -
 Nedd to call **deleteInfo** method of **dataBaseManager** as fallows -
 
 ```AS3
-	public function updateAdmin(obj:Object):void
+	public function deleteAdmin(obj:Object):void
 	{
 		//obj should have all elements of Admin table.
 		dataBaseManager.instance.deleteInfo(obj,ADMIN_TABLE_INDEX);

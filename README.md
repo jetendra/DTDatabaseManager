@@ -18,6 +18,7 @@ It has normal basic configuration to integrate it with AIR based app.
 6. [Handle Database Events](#handle-database-events)
 7. [Adding Row In Table](#adding-row-in-table)
 8. [Updating Row Of Table](#updating-row-of-table)
+9. [Deleting Row Of Table](#deleting-row-of-table)
 
 
 #### Add SWC
@@ -100,6 +101,9 @@ To set sql table and sql command define follwing commands as fallows -
 	[Embed(source="sql/admin/updateRow.sql", mimeType="application/octet-stream")]
 	private static const updateRowAdminTableQuerry : Class;
 	private static const UPDATE_ROW_ADMIN_SQL:String = new updateRowAdminTableQuerry();
+	[Embed(source="sql/admin/deleteRow.sql", mimeType="application/octet-stream")]
+	private static const deleteRowUserTableQuerry : Class;
+	private static const DELETE_ROW_USER_SQL:String = new deleteRowUserTableQuerry();
 
 ```
 
@@ -167,6 +171,15 @@ sql/admin/updateRow.sql -
 
 ```
 
+sql/admin/deleteRow.sql -
+
+```sql
+
+	DELETE FROM dtdmkeygenuser
+	WHERE id = :id
+
+```
+
 
 #### Initiate Database manager
 
@@ -185,11 +198,13 @@ Create a public initDB() method with local database manager class as fallows and
 				CREATE_ADMIN_TABLE_SQL, 
 				POPULATE_ADMIN_TABLE_SQL, 
 				ADD_ROW_ADMIN_SQL, 
-				UPDATE_ROW_ADMIN_SQL
+				UPDATE_ROW_ADMIN_SQL,
+				DELETE_ROW_ADMIN_SQL
 			);
 			dataBaseManager.instance.dbTable = admin;
 			
 			DBEventDispatcher.getInstance().addEventListener(DBEvents.DB_POPULATED,handleDBEvents);
+			DBEventDispatcher.getInstance().addEventListener(DBEvents.DB_UPDATE_DONE,handleDBEvents);
 			dataBaseManager.instance.openDatabase();
 			
 		}
@@ -263,13 +278,26 @@ Nedd to call **updateInfo** method of **dataBaseManager** as fallows -
 
 ```
 
+#### Deleting Row Of Table
+
+Nedd to call **deleteInfo** method of **dataBaseManager** as fallows -
+
+```AS3
+	public function updateAdmin(obj:Object):void
+	{
+		//obj should have all elements of Admin table.
+		dataBaseManager.instance.deleteInfo(obj,ADMIN_TABLE_INDEX);
+	}
+
+```
+
 
 ## Event Description
 
 Database manager SWC dispatch following Events, whose description is as fallows -
 
-9. [DB POPULATED](#db-populated)
-10. [DB UPDATE DONE](#db-update-done)
+10. [DB POPULATED](#db-populated)
+11. [DB UPDATE DONE](#db-update-done)
 
 #### DB POPULATED
 

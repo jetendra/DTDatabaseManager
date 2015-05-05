@@ -102,8 +102,8 @@ To set sql table and sql command define follwing commands as fallows -
 	private static const updateRowAdminTableQuerry : Class;
 	private static const UPDATE_ROW_ADMIN_SQL:String = new updateRowAdminTableQuerry();
 	[Embed(source="sql/admin/deleteRow.sql", mimeType="application/octet-stream")]
-	private static const deleteRowUserTableQuerry : Class;
-	private static const DELETE_ROW_USER_SQL:String = new deleteRowUserTableQuerry();
+	private static const deleteRowAdminTableQuerry : Class;
+	private static const DELETE_ROW_ADMIN_SQL:String = new deleteRowAdminTableQuerry();
 
 ```
 

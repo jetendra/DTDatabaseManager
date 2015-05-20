@@ -24,13 +24,7 @@ It has normal basic configuration to integrate it with AIR based app.
 
 #### Add SWC
 
-Just need to copy the SWC and pest in you Flex lib package. And call initDB() method of local data base manager with creation complete handler of you flex app as fallows -
-
-```AS3
-
-KeyGenDBManager.instance.initDB();
-
-```
+Just need to copy the SWC and pest in you Flex lib package.
 
 #### Create a Local Dtatabase Manager Class
 
@@ -215,6 +209,14 @@ Create a public initDB() method with local database manager class as fallows and
 			dataBaseManager.instance.openDatabase();
 			
 		}
+
+```
+
+And call initDB() method of local data base manager with creation complete handler of you flex app as fallows -
+
+```AS3
+
+KeyGenDBManager.instance.initDB();
 
 ```
 

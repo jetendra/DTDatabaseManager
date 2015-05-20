@@ -19,11 +19,18 @@ It has normal basic configuration to integrate it with AIR based app.
 7. [Adding Row In Table](#adding-row-in-table)
 8. [Updating Row Of Table](#updating-row-of-table)
 9. [Deleting Row Of Table](#deleting-row-of-table)
+10. [Drop Table](#drop-table)
 
 
 #### Add SWC
 
-Just need to copy the SWC and pest in you Flex lib package.
+Just need to copy the SWC and pest in you Flex lib package. And call initDB() method of local data base manager with creation complete handler of you flex app as fallows -
+
+```AS3
+
+KeyGenDBManager.instance.initDB();
+
+```
 
 #### Create a Local Dtatabase Manager Class
 
@@ -112,7 +119,7 @@ And sql commands in **sql/admin/** package as fallows-
 sql/admin/createTable.sql -
 
 ```sql
-	CREATE TABLE keygenadmin
+	CREATE TABLE IF NOT EXISTS keygenadmin
 	(
 		id int PRIMARY KEY AUTOINCREMENT,
 		adminEmail String NOT NULL,
@@ -291,13 +298,25 @@ Nedd to call **deleteInfo** method of **dataBaseManager** as fallows -
 
 ```
 
+#### Drop Table
+
+Nedd to call **dropTableData** method of **dataBaseManager** as fallows -
+
+```AS3
+	public function dropAdminTable():void
+	{
+		dataBaseManager.instance.dropTableData(ADMIN_TABLE_INDEX);
+	}
+
+```
+
 
 ## Event Description
 
 Database manager SWC dispatch following Events, whose description is as fallows -
 
-10. [DB POPULATED](#db-populated)
-11. [DB UPDATE DONE](#db-update-done)
+11. [DB POPULATED](#db-populated)
+12. [DB UPDATE DONE](#db-update-done)
 
 #### DB POPULATED
 

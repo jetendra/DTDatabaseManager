@@ -637,8 +637,8 @@ package com.devtrip
 		}
 		
 		/**
-		 * 
-		 * 
+		 * Cross Table Reference updats 
+		 * (Similar to Foreign key concept which isnotavailable with AIR SQL Lite )
 		 **/
 		
 		public function updateUserForNewApp(obj:Object,appId:String):void{
@@ -667,6 +667,26 @@ package com.devtrip
 					}
 				}	
 			}	
+		}
+		
+		/**
+		*
+		*
+		**/
+		
+		public function dropKeyTable():void
+		{
+			dataBaseManager.instance.dropTableData(KEY_TABLE_INDEX);
+		}
+		
+		public function dropAppTable():void
+		{
+			dataBaseManager.instance.dropTableData(APP_TABLE_INDEX);
+		}
+		
+		public function dropUserTable():void
+		{
+			dataBaseManager.instance.dropTableData(USER_TABLE_INDEX);
 		}
 	}
 }

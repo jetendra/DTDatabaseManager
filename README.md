@@ -332,3 +332,348 @@ This event will be dispatched when Database is created and populated with defaul
 
 This event will be dispatched when database update request is done. This will have **dbData** Array with the event params, and this arrary include the data(Array collection Object) of DB in sequence of **ADMIN_TABLE_INDEX** i.e. the index passed with populating the DB constants.
 
+## Sample Class
+
+A consolidated implementation of above steps is as fallows - 
+
+```AS3
+
+package com.devtrip
+{
+	import com.devtrip.utils.db.dataBaseManager;
+	import com.devtrip.utils.db.events.DBEventDispatcher;
+	import com.devtrip.utils.db.events.DBEvents;
+	import com.devtrip.utils.db.tableFactory;
+	import com.devtrip.vo.devtripVo;
+	
+	import mx.collections.ArrayCollection;
+
+	public class DTDMKeyGenDBManager
+	{
+		private static var _instance : DTDMKeyGenDBManager = null;
+		
+		private static const DB_FILE : String = "dtdmkeygen.db";
+		private static const DB_PWD : String = "1234567891234567";
+		
+		private  static const USER_TABLE_INDEX : int = 0;
+		private  static const USER_TABLE_NAME : String = "dtdmkeygenuser";
+		[Embed(source="sql/user/createTable.sql", mimeType="application/octet-stream")]
+		private static const CreateUserTableQuerry : Class;
+		private static const CREATE_USER_TABLE_SQL:String = new CreateUserTableQuerry();
+		[Embed(source="sql/user/populateTable.sql", mimeType="application/octet-stream")]
+		private static const PopulateUserTableQuerry : Class;
+		private static const POPULATE_USER_TABLE_SQL:String = new PopulateUserTableQuerry();
+		[Embed(source="sql/user/addRow.sql", mimeType="application/octet-stream")]
+		private static const AddRowUserTableQuerry : Class;
+		private static const ADD_ROW_USER_SQL:String = new AddRowUserTableQuerry();
+		[Embed(source="sql/user/updateRow.sql", mimeType="application/octet-stream")]
+		private static const updateRowUserTableQuerry : Class;
+		private static const UPDATE_ROW_USER_SQL:String = new updateRowUserTableQuerry();
+		[Embed(source="sql/user/deleteRow.sql", mimeType="application/octet-stream")]
+		private static const deleteRowUserTableQuerry : Class;
+		private static const DELETE_ROW_USER_SQL:String = new deleteRowUserTableQuerry();
+		
+		private  static const APP_TABLE_INDEX : int = 1;
+		private  static const APP_TABLE_NAME : String = "dtdmkeygenapp";
+		[Embed(source="sql/app/createTable.sql", mimeType="application/octet-stream")]
+		private static const CreateAppTableQuerry : Class;
+		private static const CREATE_APP_TABLE_SQL:String = new CreateAppTableQuerry();
+		[Embed(source="sql/app/populateTable.sql", mimeType="application/octet-stream")]
+		private static const PopulateAppTableQuerry : Class;
+		private static const POPULATE_APP_TABLE_SQL:String = new PopulateAppTableQuerry();
+		[Embed(source="sql/app/addRow.sql", mimeType="application/octet-stream")]
+		private static const AddRowAppTableQuerry : Class;
+		private static const ADD_ROW_APP_SQL:String = new AddRowAppTableQuerry();
+		[Embed(source="sql/app/updateRow.sql", mimeType="application/octet-stream")]
+		private static const updateRowAppTableQuerry : Class;
+		private static const UPDATE_ROW_APP_SQL:String = new updateRowAppTableQuerry();
+		[Embed(source="sql/app/deleteRow.sql", mimeType="application/octet-stream")]
+		private static const deleteRowAppTableQuerry : Class;
+		private static const DELETE_ROW_APP_SQL:String = new deleteRowAppTableQuerry();
+		
+		private  static const KEY_TABLE_INDEX : int = 2;
+		private  static const KEY_TABLE_NAME : String = "dtdmkeygenkey";
+		[Embed(source="sql/key/createTable.sql", mimeType="application/octet-stream")]
+		private static const CreateKeyTableQuerry : Class;
+		private static const CREATE_KEY_TABLE_SQL:String = new CreateKeyTableQuerry();
+		[Embed(source="sql/key/populateTable.sql", mimeType="application/octet-stream")]
+		private static const PopulateKeyTableQuerry : Class;
+		private static const POPULATE_KEY_TABLE_SQL:String = new PopulateKeyTableQuerry();
+		[Embed(source="sql/key/addRow.sql", mimeType="application/octet-stream")]
+		private static const AddRowKeyTableQuerry : Class;
+		private static const ADD_ROW_KEY_SQL:String = new AddRowKeyTableQuerry();
+		[Embed(source="sql/key/updateRow.sql", mimeType="application/octet-stream")]
+		private static const updateRowKeyTableQuerry : Class;
+		private static const UPDATE_ROW_KEY_SQL:String = new updateRowKeyTableQuerry();
+		[Embed(source="sql/key/deleteRow.sql", mimeType="application/octet-stream")]
+		private static const deleteRowKeyTableQuerry : Class;
+		private static const DELETE_ROW_KEY_SQL:String = new deleteRowKeyTableQuerry();
+		
+		public function DTDMKeyGenDBManager(enforcer:SingletonEnforcer)
+		{
+			if (_instance != null) throw Error('Singelton error');
+			_instance = this;
+		}
+		
+		/**
+		 * @Public [access point for class]
+		 * @param - [NA] 
+		 * @return - [available instance of the class
+		 * */
+		public static function get instance() : DTDMKeyGenDBManager {
+			if(_instance == null){
+				_instance = new DTDMKeyGenDBManager(new SingletonEnforcer());
+			}
+			return _instance;
+		}
+		
+		/**
+		 * 
+		 * 
+		 **/
+		
+		public function initDB():void
+		{
+			dataBaseManager.instance.dbFile = DB_FILE;
+			dataBaseManager.instance.dbPwd = DB_PWD;
+			
+			var user : Object = tableFactory.createObject(
+				USER_TABLE_INDEX, 
+				USER_TABLE_NAME, 
+				CREATE_USER_TABLE_SQL, 
+				POPULATE_USER_TABLE_SQL, 
+				ADD_ROW_USER_SQL, 
+				UPDATE_ROW_USER_SQL,
+				DELETE_ROW_USER_SQL
+			);
+			dataBaseManager.instance.dbTable = user;
+			
+			var app : Object = tableFactory.createObject(
+				APP_TABLE_INDEX, 
+				APP_TABLE_NAME, 
+				CREATE_APP_TABLE_SQL, 
+				POPULATE_APP_TABLE_SQL, 
+				ADD_ROW_APP_SQL, 
+				UPDATE_ROW_APP_SQL,
+				DELETE_ROW_APP_SQL
+			);
+			dataBaseManager.instance.dbTable = app;
+			
+			var key : Object = tableFactory.createObject(
+				KEY_TABLE_INDEX, 
+				KEY_TABLE_NAME, 
+				CREATE_KEY_TABLE_SQL, 
+				POPULATE_KEY_TABLE_SQL, 
+				ADD_ROW_KEY_SQL, 
+				UPDATE_ROW_KEY_SQL,
+				DELETE_ROW_KEY_SQL
+			);
+			dataBaseManager.instance.dbTable = key;
+						
+			DBEventDispatcher.getInstance().addEventListener(DBEvents.DB_POPULATED,handleDBEvents);
+			DBEventDispatcher.getInstance().addEventListener(DBEvents.DB_UPDATE_DONE,handleDBEvents);
+			dataBaseManager.instance.openDatabase();
+			
+		}
+		
+		/**
+		 * 
+		 * 
+		 **/
+		
+		private function handleDBEvents(evt:DBEvents):void
+		{
+			switch(evt.type){
+				case DBEvents.DB_POPULATED:
+					
+					devtripVo.instance.appdbdata = evt.params.dbData[APP_TABLE_INDEX];
+					devtripVo.instance.userdbdata = evt.params.dbData[USER_TABLE_INDEX];
+					devtripVo.instance.keydbdata = evt.params.dbData[KEY_TABLE_INDEX];
+					logAppData(devtripVo.instance.appdbdata);
+					logUserData(devtripVo.instance.userdbdata);
+					logKeyData(devtripVo.instance.keydbdata);
+					
+					break;
+				case DBEvents.DB_UPDATE_DONE:
+					
+					if(evt.params.dbTableIndex == APP_TABLE_INDEX)
+						devtripVo.instance.appdbdata = evt.params.dbData[APP_TABLE_INDEX];
+					else if(evt.params.dbTableIndex == USER_TABLE_INDEX)
+						devtripVo.instance.userdbdata = evt.params.dbData[USER_TABLE_INDEX];
+					else if(evt.params.dbTableIndex == KEY_TABLE_INDEX)
+						devtripVo.instance.keydbdata = evt.params.dbData[KEY_TABLE_INDEX];
+					
+					logAppData(devtripVo.instance.appdbdata);
+					logUserData(devtripVo.instance.userdbdata);
+					logKeyData(devtripVo.instance.keydbdata);
+					
+					break;
+				default:
+					trace("do nothing");
+			}
+		}
+		
+		/**
+		 * 
+		 * 
+		 **/
+		
+		private function logUserData(arr : ArrayCollection):void{
+			for(var i:String in arr){
+				trace("id : " + arr[i].id +
+					" , " + "userEmail : " + arr[i].userEmail +
+					" , " + "userUName : " + arr[i].userUName +
+					" , " + "userPwd : " + arr[i].userPwd + 
+					" , " + "userApp : " + arr[i].userApp + 
+					" , " + "userAccess : " + arr[i].userAccess);
+			}
+		}
+		
+		private function logAppData(arr : ArrayCollection):void{
+			for(var i:String in arr){
+				trace("id : " + arr[i].id +
+					" , " + "appId : " + arr[i].appId +
+					" , " + "appName : " + arr[i].appName +
+					" , " + "appVesrion : " + arr[i].appVesrion + 
+					" , " + "appAdmin : " + arr[i].appAdmin + 
+					" , " + "appUser : " + arr[i].appUser + 
+					" , " + "appStatus : " + arr[i].appStatus);
+			}
+		}
+		
+		private function logKeyData(arr : ArrayCollection):void{
+			for(var i:String in arr){
+				trace("id : " + arr[i].id +
+					" , " + "appId : " + arr[i].appId +
+					" , " + "appName : " + arr[i].appName +
+					" , " + "appVesrion : " + arr[i].appVesrion + 
+					" , " + "appGuid : " + arr[i].appGuid + 
+					" , " + "appUserEmail : " + arr[i].appUserEmail + 
+					" , " + "appKeyDate : " + arr[i].appKeyDate);
+			}
+		}
+		
+		/**
+		 * 
+		 * 
+		 **/
+		
+		public function addKey(obj:Object):void
+		{
+			var keyObj : Object = new Object();
+			keyObj.appId = obj.id;
+			keyObj.appName = obj.name;
+			keyObj.appVesrion = obj.vesrion;
+			keyObj.appGuid = obj.guid;
+			keyObj.appUserEmail = obj.userEmail;
+			keyObj.appKeyDate = obj.keyDate;
+			
+			dataBaseManager.instance.insertInfo(keyObj,KEY_TABLE_INDEX);
+		}
+		
+		public function addApp(obj:Object):void
+		{
+			var appObj : Object = new Object();
+			appObj.appId = obj.id;
+			appObj.appName = obj.name;
+			appObj.appVesrion = obj.version;
+			appObj.appAdmin = obj.admin;
+			appObj.appUser = obj.user;
+			appObj.appStatus = obj.status;
+			
+			dataBaseManager.instance.insertInfo(appObj,APP_TABLE_INDEX);
+		}
+		
+		public function addUser(obj:Object):void
+		{
+			var userObj : Object = new Object();
+			userObj.userEmail = obj.Email;
+			userObj.userUName = obj.UName;
+			userObj.userPwd = obj.Pwd;
+			userObj.userApp = obj.App;
+			userObj.userAccess = obj.Access;
+			
+			dataBaseManager.instance.insertInfo(userObj,USER_TABLE_INDEX);
+		}
+		
+		/**
+		 * 
+		 * 
+		 **/
+		
+		public function updateKey(obj:Object):void
+		{
+			dataBaseManager.instance.updateInfo(obj,KEY_TABLE_INDEX);
+		}
+		
+		public function updateApp(obj:Object):void
+		{
+			dataBaseManager.instance.updateInfo(obj,APP_TABLE_INDEX);
+		}
+		
+		public function updateUser(obj:Object):void
+		{
+			dataBaseManager.instance.updateInfo(obj,USER_TABLE_INDEX);
+		}
+		
+		/**
+		 * 
+		 * 
+		 **/
+		
+		public function deleteKey(obj:Object):void
+		{
+			dataBaseManager.instance.deleteInfo(obj,KEY_TABLE_INDEX);
+		}
+		
+		public function deleteApp(obj:Object):void
+		{
+			dataBaseManager.instance.deleteInfo(obj,APP_TABLE_INDEX);
+		}
+		
+		public function deleteUser(obj:Object):void
+		{
+			dataBaseManager.instance.deleteInfo(obj,USER_TABLE_INDEX);
+		}
+		
+		/**
+		 * 
+		 * 
+		 **/
+		
+		public function updateUserForNewApp(obj:Object,appId:String):void{
+			var userIdArr : Array = (obj.user).split(",");
+			var userDb : ArrayCollection = devtripVo.instance.userdbdata;
+			for (var i:String in userIdArr){
+				for(var j:String in userDb){
+					if(userDb[j].id == userIdArr[i]){
+						var userDataObject : Object = userDb[j];
+						userDataObject.userApp = userDataObject.userApp + ","+appId;
+						dataBaseManager.instance.updateInfo(userDataObject,USER_TABLE_INDEX);
+					}
+				}	
+			}	
+		}
+		
+		public function updateAppForNewUser(obj:Object,userId:String):void{
+			var appIdArr : Array = (obj.App).split(",");
+			var appDb : ArrayCollection = devtripVo.instance.appdbdata;
+			for (var i:String in appIdArr){
+				for(var j:String in appDb){
+					if(appDb[j].id == appIdArr[i]){
+						var appDataObject : Object = appDb[j];
+						appDataObject.appUser = appDataObject.appUser + "," + userId;
+						dataBaseManager.instance.updateInfo(appDataObject,APP_TABLE_INDEX);
+					}
+				}	
+			}	
+		}
+	}
+}
+
+class SingletonEnforcer
+{
+}
+
+
+```
